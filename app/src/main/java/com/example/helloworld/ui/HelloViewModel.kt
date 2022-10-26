@@ -13,6 +13,13 @@ class HelloViewModel : ViewModel() {
     //MutableLiveData is mutable, and is used for data that we expect to edit
     var mutableLiveData: MutableLiveData<String> = MutableLiveData()
 
+    init {
+        //Set the initial value of the LiveData
+        liveData = MutableLiveData("Hello World!")
+        //Set the initial value of the MutableLiveData
+        mutableLiveData.value = "Hello Developer!"
+    }
+
     //Simulate retrieving data from a database
     fun getHelloModel() : HelloModel {
         return HelloModel("MVVM has entered the chat...", 100)
