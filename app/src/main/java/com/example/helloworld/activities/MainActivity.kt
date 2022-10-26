@@ -2,25 +2,24 @@ package com.example.helloworld.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import com.example.helloworld.R
-import com.example.helloworld.models.HelloModel
-import com.example.helloworld.ui.AppView
-import com.example.helloworld.ui.Presenter
+import com.example.helloworld.ui.HelloViewModel
 
-//Note that we are now implementing the AppView interface
-class MainActivity : AppCompatActivity(), AppView {
-    //MVP - Model View Presenter Pattern
+//Note that we removed the AppView interface and the Presenter class
+//We have completely decoupled the Activity from the App logic
+class MainActivity : AppCompatActivity() {
+    //MVVM - Model View ViewModel Pattern
     //Model [HelloModel] - Data
     //View [MainActivity containing TextView & Button] - UI
-    //Presenter [Presenter] - Logic
+    //ViewModel [HelloViewModel] - Logic
 
     var button: Button? = null
     var textView : TextView? = null
-    var presenter: Presenter? = null
+    var viewModel: HelloViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,30 +28,20 @@ class MainActivity : AppCompatActivity(), AppView {
         button = findViewById(R.id.button3)
         textView = findViewById(R.id.textView)
 
-        //Initialize the presenter
-        //We pass it the view (this) so that it can update the widgets within the view
-        presenter = Presenter(this)
+        //Initialize the ViewModel
+        viewModel = ViewModelProvider(this)[HelloViewModel::class.java]
 
         //Add a click listener to the button
         button?.setOnClickListener(View.OnClickListener {
-            //Call the presenter to retrieve/update the data
-            //The Activity no longer contains the logic for accessing the data
-            presenter!!.onGetAppName()
+            //Call to update the data in the view model
+            //The Activity no longer contains the logic binding the view to the model
+            viewModel!!.onGetAppName()
         })
 
-
+        //Observing the data for any changes
+        //Once a change is detected, the UI is updated
+        viewModel!!.mutableLiveData.observe(this) {
+            textView?.text = it
+        }
     }
-
-    //function that may be used in place of the onclick listener
-    fun showInfo(view: View){
-        //textView?.text = getInfoFromModel().name + " was downloaded: " + getInfoFromModel().downloads + " times"
-        presenter?.onGetAppName()
-    }
-
-    //Override the function from the AppView interface
-    //Establishing the link between our view and the presenter
-    override fun onGetAppName(name: String) {
-        textView?.text = name
-    }
-
 }
