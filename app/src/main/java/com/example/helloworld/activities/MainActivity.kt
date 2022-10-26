@@ -28,24 +28,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         //Bind view
         binding = ActivityMainBinding.inflate(layoutInflater)
+
         //Set the visible view to the bound view
         setContentView(binding.root)
 
         //Initialize the ViewModel
         viewModel = ViewModelProvider(this)[HelloViewModel::class.java]
 
-        //Add a click listener to the button
-        binding.button3.setOnClickListener(View.OnClickListener {
-            //Call to update the data in the view model
-            //The Activity no longer contains the logic binding the view to the model
-            viewModel!!.onGetAppName()
-        })
+        //View binding will now observe and automatically update the UI when the data changes
+        binding.viewModel = viewModel
 
-        //Observing the data for any changes
-        //Once a change is detected, the UI is updated
-        viewModel!!.mutableLiveData.observe(this) {
-            //binding provides nullsafety for the view
-            binding.textView.text = it
-        }
+        //Lifecycle owner is required for view binding to work
+        binding.lifecycleOwner = this
     }
 }
