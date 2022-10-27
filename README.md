@@ -1,8 +1,8 @@
-#Android Architecture Patterns
+# Android Architecture Patterns
 
 Examples of Android Architecture covered in lectures.
 
-##Examples
+## Examples
 | Branch | Description |
 |--------| ------------- |
 | mvm | Model View Model |
